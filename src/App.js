@@ -5,15 +5,15 @@ import "./App.css";
 
 const NotFound = lazy(() => import("./components/notFound"));
 const HomePage = lazy(() => import("./components/homePage"));
-const RandomJokes = lazy(() => import("./components/randomJokes"));
-
+// const RandomJokes = lazy(() => import("./components/randomJokes"));
+const Jokes = lazy(() => import("./components/jokes"));
 function App() {
   return (
     <div className="App">
       <Suspense fallback={<Spinner />}>
         <Switch>
           <Route exact path="/" component={HomePage} />
-          <Route exact path="/random-jokes" component={RandomJokes} />
+          <Route exact path="/jokes" component={Jokes} />
           <Route path="/not-found" component={NotFound} />
           <Redirect to="/not-found" />
         </Switch>
