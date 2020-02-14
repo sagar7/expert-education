@@ -1,4 +1,4 @@
-import React, { useEffect, lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
 import Spinner from "./components/spinner";
 import "./App.css";

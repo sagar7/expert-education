@@ -1,8 +1,15 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-const ListGroup = ({ categories, name, onItemSelect, selectedItem }) => {
+const ListGroup = ({
+  categories,
+  name,
+  onItemSelect,
+  selectedItem,
+  length
+}) => {
   return (
-    <div className="container mt-3 ml-5">
+    <div className="container">
       <h2 className="topic ">{name}</h2>
       <ul className="list-group " style={{ cursor: "pointer" }}>
         {categories.map(category => {
@@ -17,13 +24,26 @@ const ListGroup = ({ categories, name, onItemSelect, selectedItem }) => {
               onClick={() => onItemSelect(category)}
             >
               {category}
-              <span className="badge badge-primary badge-pill">14</span>
+              {selectedItem === category ? (
+                <span className="badge badge-primary badge-pill">
+                  {length ? length : ""}
+                </span>
+              ) : (
+                ""
+              )}
             </li>
           );
         })}
       </ul>
     </div>
   );
+};
+ListGroup.prototype = {
+  name: PropTypes.string,
+  categories: PropTypes.array,
+  selectedItem: PropTypes.string,
+  onItemSelect: PropTypes.func,
+  length: PropTypes.number
 };
 
 export default ListGroup;
