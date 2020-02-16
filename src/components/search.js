@@ -5,13 +5,11 @@ import { connect } from "react-redux";
 import { freeTextSearch } from "../services/jokeServices";
 import {
   setSearchedJoke,
-  setSelectedCategory
+  setSelectedCategory,
+  setValidationError,
+  setSearchData
 } from "../redux/jokes/jokeAction";
 class Search extends Component {
-  state = {
-    search: "",
-    error: ""
-  };
   search = Joi.string()
     .min(3)
     .max(20)
@@ -21,25 +19,29 @@ class Search extends Component {
   handleSubmit = async e => {
     try {
       e.preventDefault();
-      const { error } = await this.search.validate(this.state.search);
-      this.setState({ error: error ? error.details[0].message : "" });
+      const { error } = await this.search.validate(this.props.search);
+      const { setValidationError } = this.props;
+      setValidationError(error ? error.details[0].message : "");
       if (error) return;
 
-      const { data } = await freeTextSearch(this.state.search);
+      const { data } = await freeTextSearch(this.props.search);
       const { setSearchedJoke, setSelectedCategory } = this.props;
+      console.log(data)
       setSearchedJoke(data.result);
       setSelectedCategory("");
     } catch (ex) {
+      console.log(ex)
       toast.error("Some error occur!");
     }
   };
 
   handleChange = ({ target: input }) => {
     const value = input.value;
-    this.setState({ search: value });
+    const { setSearchData } = this.props;
+    setSearchData(value);
   };
   render() {
-    const { error } = this.state;
+    const { error } = this.props;
 
     return (
       <div className="row">
@@ -65,6 +67,11 @@ class Search extends Component {
 }
 const mapDispatchToProps = dispatch => ({
   setSearchedJoke: joke => dispatch(setSearchedJoke(joke)),
-  setSelectedCategory: category => dispatch(setSelectedCategory(category))
+  setSelectedCategory: category => dispatch(setSelectedCategory(category)),
+  setValidationError: error => dispatch(setValidationError(error)),
+  setSearchData: data => dispatch(setSearchData(data))
 });
-export default connect(null, mapDispatchToProps)(Search);
+const mapStateToProps=({Joke:{error,search}})=>({
+  error,search
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

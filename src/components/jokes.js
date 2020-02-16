@@ -57,6 +57,7 @@ class Jokes extends Component {
           {searchedJoke
             ? searchedJoke.map(data => (
                 <CategoryJoke
+                  key={data.id}
                   id={data.id}
                   created_at={data.created_at}
                   value={data.value}

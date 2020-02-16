@@ -5,7 +5,9 @@ const INITIAL_STATE = {
   categories: [],
   selectedCategoryData: {},
   selectedCategory: "",
-  searchedJoke:[],
+  searchedJoke: [],
+  search: "",
+  error: ""
 };
 
 const jokeReducer = (state = INITIAL_STATE, action) => {
@@ -30,11 +32,21 @@ const jokeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         selectedCategory: action.payload
       };
-      case JokeActionType.SET_SEARCHED_JOKE:
-        return{
-          ...state,
-          searchedJoke:action.payload
-        }
+    case JokeActionType.SET_SEARCHED_JOKE:
+      return {
+        ...state,
+        searchedJoke: action.payload
+      };
+    case JokeActionType.SET_SEARCH_DATA:
+      return {
+        ...state,
+        search: action.payload
+      };
+    case JokeActionType.SET_VALIDATION_ERROR:
+      return {
+        ...state,
+        error: action.payload
+      };
     default:
       return state;
   }

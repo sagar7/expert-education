@@ -24,3 +24,13 @@ export const setSearchedJoke = joke => ({
   type: JokeActionType.SET_SEARCHED_JOKE,
   payload: joke
 });
+
+export const setSearchData = data => ({
+  type: JokeActionType.SET_SEARCH_DATA,
+  payload: data
+});
+
+export const setValidationError=error=>({
+  type:JokeActionType.SET_VALIDATION_ERROR,
+  payload:error
+})
