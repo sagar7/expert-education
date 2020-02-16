@@ -1,15 +1,17 @@
 import React, { lazy, Suspense } from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Spinner from "./components/spinner";
 import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const NotFound = lazy(() => import("./components/notFound"));
 const HomePage = lazy(() => import("./components/homePage"));
-// const RandomJokes = lazy(() => import("./components/randomJokes"));
 const Jokes = lazy(() => import("./components/jokes"));
 function App() {
   return (
     <div className="App">
+      <ToastContainer />
       <Suspense fallback={<Spinner />}>
         <Switch>
           <Route exact path="/" component={HomePage} />

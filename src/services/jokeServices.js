@@ -11,7 +11,10 @@ export function categories() {
 }
 
 export function categoryData(category) {
-  return http.get(`/search?query=${category}`);
+  return http.get(`/random?category=${category}`);
+}
+export async function freeTextSearch(query) {
+  return await http.get(`/search?query=${query}`);
 }
 export default {
   random,

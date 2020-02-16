@@ -1,4 +1,4 @@
-//raben can be used for log incase of production
+
 
 function init() {}
 

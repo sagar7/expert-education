@@ -1,67 +1,83 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { toast } from "react-toastify";
-import CategoryJoke from "./reusable/categoryJoke";
-import ListGroup from "./reusable/listGroup";
-import { categories, categoryData, random } from "../services/jokeServices";
-
+import CategoryJoke from "./categoryJoke";
+import ListGroup from "./listGroup";
+import { categories, random } from "../services/jokeServices";
+import { setCategories, setJokeOfTheDay } from "../redux/jokes/jokeAction";
+import Search from "./search";
 class Jokes extends Component {
-  state = {
-    categories: [],
-    selectedCategory: "",
-    categoryData: {},
-    randomJoke: {}
-  };
-  handleCategorySelect = async category => {
-    this.setState({ selectedCategory: category });
-    const { data } = await categoryData(category);
-    this.setState({ categoryData: data });
-  };
+  state = {};
+
   async componentDidMount() {
     Promise.all([categories(), random()])
       .then(res => {
-        if (res[0].config.url === "/categories")
-          this.setState({ categories: res[0].data });
-        this.setState({ randomJoke: res[1].data });
+        const { setCategories, setJokeOfTheDay } = this.props;
+        if (res[0].config.url === "/categories") {
+          setCategories(res[0].data);
+          setJokeOfTheDay(res[1].data);
+        } else {
+          setCategories(res[1].data);
+          setJokeOfTheDay(res[0].data);
+        }
       })
       .catch(ex => {
         if (ex.response && ex.response.status === 404)
-          toast.error("Cannot get Categories");
+          toast.error("Cannot get data");
       });
   }
-
   render() {
     const {
-      categories,
+      jokeOfTheDay,
       selectedCategory,
-      categoryData: { result },
-      randomJoke
-    } = this.state;
-    console.log(result)
+      selectedCategoryData: { id, created_at, value },
+      searchedJoke
+    } = this.props;
+
     return (
       <div className="row">
         <div className="col-4 ml- mt-2">
-          <ListGroup
-            name="Select category"
-            categories={categories}
-            onItemSelect={this.handleCategorySelect}
-            selectedItem={selectedCategory}
-            length={result ? result.length : ""}
-          />
+          <ListGroup />
         </div>
-        <div className="category-joke col-8">
+        <div className="category-joke col-6 mt-5">
+          <Search />
           {selectedCategory.length ? (
-            <CategoryJoke categoryData={result} />
+            <CategoryJoke id={id} created_at={created_at} value={value} />
           ) : (
             <h2>
               Joke of the day <br />
               <br />
-              {randomJoke.value}
+              <CategoryJoke
+                id={jokeOfTheDay.id}
+                created_at={jokeOfTheDay.created_at}
+                value={jokeOfTheDay.value}
+              />
             </h2>
           )}
+          {searchedJoke
+            ? searchedJoke.map(data => (
+                <CategoryJoke
+                  id={data.id}
+                  created_at={data.created_at}
+                  value={data.value}
+                />
+              ))
+            : ""}
         </div>
       </div>
     );
   }
 }
-
-export default Jokes;
+const mapDispatchToProps = dispatch => ({
+  setCategories: categories => dispatch(setCategories(categories)),
+  setJokeOfTheDay: joke => dispatch(setJokeOfTheDay(joke))
+});
+const mapStateToProps = ({
+  Joke: { jokeOfTheDay, selectedCategory, selectedCategoryData, searchedJoke }
+}) => ({
+  jokeOfTheDay,
+  selectedCategory,
+  selectedCategoryData,
+  searchedJoke
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Jokes);
